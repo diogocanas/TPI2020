@@ -24,7 +24,7 @@
 </head>
 
 <body>
-  <?php include_once '../html/navbar.php'; ?>
+  <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/navbar.php'; ?>
   <form class="p-5">
     <div class="form-group">
       <label for="exampleInputEmail1">Adresse mail</label>
@@ -37,7 +37,7 @@
     <button type="submit" class="btn btn-primary">Se connecter</button>
     <small id="emailHelp" class="form-text text-muted"><a href="register.php">Vous n'avez pas de compte? Inscrivez-vous ici!</a></small>
   </form>
-  <?php include_once '../html/footer.php'; ?>
+  <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/footer.php'; ?>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

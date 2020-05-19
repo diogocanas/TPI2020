@@ -24,9 +24,9 @@
 </head>
 
 <body>
-  <?php include_once '../html/navbar.php'; ?>
+  <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/navbar.php'; ?>
 
-  <?php include_once '../html/footer.php'; ?>
+  <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/footer.php'; ?>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

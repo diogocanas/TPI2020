@@ -9,11 +9,11 @@
  * Version        : 1.0
  */
 
-require_once '../php/inc.all.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
 
 $nameUser = filter_input(INPUT_POST, 'nameUser', FILTER_SANITIZE_STRING);
 $firstNameUser = filter_input(INPUT_POST, 'firstNameUser', FILTER_SANITIZE_STRING);
-$emailUser = filter_input(INPUT_POST, 'emailUser', FILTER_VALIDATE_EMAIL);
+$emailUser = filter_input(INPUT_POST, 'emailUser', FILTER_SANITIZE_STRING);
 $passwordUser = filter_input(INPUT_POST, 'passwordUser', FILTER_SANITIZE_STRING);
 $verifPasswordUser = filter_input(INPUT_POST, 'verifPasswordUser', FILTER_SANITIZE_STRING);
 $submitButton = filter_input(INPUT_POST, 'submitButton');
@@ -33,42 +33,60 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
 </head>
 
 <body>
-  <?php include_once '../html/navbar.php'; ?>
-  <form method="POST" action="register.php" class="p-5">
-    <div class="form-group">
-      <label for="nameUser">Nom</label>
-      <input type="text" class="form-control" id="nameUser" name="nameUser" autofocus>
-    </div>
-    <div class="form-group">
-      <label for="firstNameUser">Prénom</label>
-      <input type="text" class="form-control" id="firstNameUser" name="firstNameUser">
-    </div>
-    <div class="form-group">
-      <label for="emailUser">Adresse mail</label>
-      <input type="email" class="form-control" id="emailUser" name="emailUser" aria-describedby="emailHelp">
-    </div>
-    <div class="form-group">
-      <label for="passwordUser">Mot de passe</label>
-      <input type="password" class="form-control" id="passwordUser" name="passwordUser">
-    </div>
-    <div class="form-group">
-      <label for="verifPasswordUser">Vérification du mot de passe</label>
-      <input type="password" class="form-control" id="verifPasswordUser" name="verifPasswordUser">
-    </div>
-    <button type="submit" class="btn btn-primary" name="submitButton">S'inscrire</button>
-  </form>
-  <?php
-  if (isset($submitButton)) {
-    if ($nameUser != "" && $firstNameUser != "" && $emailUser != "" && $passwordUser != "" && $verifPasswordUser != "") {
-      if ($passwordUser == $verifPasswordUser) {
-        $user = new User($nameUser, $firstNameUser, $emailUser, $passwordUser);
-        if (CreateUser($user)) {
-          header('Location: login.php');
+  <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/navbar.php'; ?>
+  <div class="container">
+    <?php
+    if (isset($submitButton)) {
+      if ($nameUser != "" && $firstNameUser != "" && $emailUser != "" && $passwordUser != "" && $verifPasswordUser != "") {
+        if ($passwordUser == $verifPasswordUser) {
+          if (filter_var($emailUser, FILTER_VALIDATE_EMAIL)) {
+            $user = new User($emailUser, $nameUser, $firstNameUser, $passwordUser);
+            if (createUser($user)) {
+              sendConfirmationMail($emailUser, "localhost/confirmationMail.php?mail=" . $emailUser);
+    ?>
+              <div class="alert alert-success" role="alert">
+                L'inscription a fonctionné! Merci de confirmer votre adresse mail avant de vous connecter.
+              </div>
+    <?php
+            }
+          } else {
+            showError("Votre adresse mail n'est pas valide.");
+          }
+        } else {
+          showError("Les mots de passes ne correspondent pas.");
         }
+      } else {
+        showError("Veuillez remplir tous les champs.");
       }
     }
-  }
-  include_once '../html/footer.php';
+    ?>
+    <form method="POST" action="register.php">
+      <div class="form-group">
+        <label for="nameUser">Nom</label>
+        <input type="text" class="form-control" id="nameUser" name="nameUser" autofocus>
+      </div>
+      <div class="form-group">
+        <label for="firstNameUser">Prénom</label>
+        <input type="text" class="form-control" id="firstNameUser" name="firstNameUser">
+      </div>
+      <div class="form-group">
+        <label for="emailUser">Adresse mail</label>
+        <input type="email" class="form-control" id="emailUser" name="emailUser" aria-describedby="emailHelp">
+      </div>
+      <div class="form-group">
+        <label for="passwordUser">Mot de passe</label>
+        <input type="password" class="form-control" id="passwordUser" name="passwordUser">
+      </div>
+      <div class="form-group">
+        <label for="verifPasswordUser">Vérification du mot de passe</label>
+        <input type="password" class="form-control" id="verifPasswordUser" name="verifPasswordUser">
+      </div>
+      <button type="submit" class="btn btn-primary" name="submitButton">S'inscrire</button>
+    </form>
+
+  </div>
+  <?php
+  include_once $_SERVER['DOCUMENT_ROOT'] . 'html/footer.php';
   ?>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -76,4 +94,5 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
+
 </html>
