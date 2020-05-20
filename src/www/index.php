@@ -8,6 +8,14 @@
  * Description    : Page d'accueil
  * Version        : 1.0
  */
+
+if (!isset($_SESSION['logged'])) {
+  $_SESSION['logged'] = false;
+}
+
+if (!isset($_SESSION['loggedUser'])) {
+  $_SESSION['loggedUser'] = "";
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -25,7 +33,11 @@
 
 <body>
   <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/navbar.php'; ?>
-
+  <?php
+  if (!empty($_SESSION['loggedUser']) && $_SESSION['logged']) {
+    echo "Bienvenue " . $_SESSION['loggedUser']->FirstName . " " . $_SESSION['loggedUser']->Name;
+  }
+  ?>
   <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/footer.php'; ?>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

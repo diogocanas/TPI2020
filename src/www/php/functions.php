@@ -38,12 +38,67 @@ function createUser($user)
 }
 
 /**
+ * @brief Fonction qui vérifie les données d'un utilisateur avant son login
+ *
+ * @param string $userMail Adresse mail de l'utilisateur
+ * @param string $userPwd Mot de passe de l'utilisateur
+ * @return bool Vrai si l'utilisateur est authentifié, faux sinon
+ */
+function login($userMail, $userPwd)
+{
+    try {
+        $db = Database::getInstance();
+        $sql = 'SELECT password, verified FROM users WHERE email LIKE :email';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':email', $userMail);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            if ($row['password'] == hash('sha256', $userPwd)) {
+                if ($row['verified'] == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    } catch (PDOException $e) {
+        die('Erreur : ' . $e->getMessage());
+    }
+}
+
+/**
+ * @brief Fonction qui retourne un utilisateur par rapport à son adresse mail
+ *
+ * @param string $userMail Adresse mail d'un utilisateur
+ * @return User L'utilisateur
+ */
+function getUserByEmail($userMail) 
+{
+    try {
+        $db = Database::getInstance();
+        $sql = 'SELECT email, name, firstName, password, verified, roles_id FROM users WHERE email LIKE :email';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':email', $userMail);
+        $stmt->execute();
+        while ($row = $stmt->fetch())
+        {
+            return new User($row['email'], $row['name'], $row['firstName'], $row['password'], $row['verified'], $row['roles_id']);
+        }
+    } catch (PDOException $e) {
+        die('Erreur : ' . $e->getMessage());
+    }
+}
+
+/**
  * @brief Fonction qui confirme l'adresse mail de l'utilisateur
  *
  * @param string $userMail Le mail de l'utilisateur recherché
  * @return bool Vrai si la modification à été faite, une erreur est affichée sinon
  */
-function confirmMail($userMail) {
+function confirmMail($userMail)
+{
     try {
         $db = Database::getInstance();
         $sql = 'UPDATE users SET verified = 1 WHERE email LIKE :email';

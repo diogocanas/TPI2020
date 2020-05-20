@@ -19,12 +19,14 @@ class User
      * @param string $email L'adresse mail de l'utilisateur
      * @param string $password Le mot de passe de l'utilisateur (hashé)
      */
-    function __construct($email, $name, $firstName, $password)
+    function __construct($email, $name, $firstName, $password, $verified = 0, $roles_id = 0)
     {
         $this->Email = $email;
         $this->Name = $name;
         $this->FirstName = $firstName;
         $this->Password = $password;
+        $this->Verified = $verified;
+        $this->Roles_id = $roles_id;
     }
     function __clone()
     {
@@ -53,10 +55,10 @@ class User
     /**
      * @var int 1 si l'adresse mail de l'utilisateur est vérifiée, 0 sinon
      */
-    public $Verified = 0;
+    public $Verified;
 
     /**
      * @var int 1 si administrateur, 0 si utilisateur
      */
-    public $Roles_id = 0;
+    public $Roles_id;
 }

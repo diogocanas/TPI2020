@@ -44,7 +44,7 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
             if (createUser($user)) {
               sendConfirmationMail($emailUser, "localhost/confirmationMail.php?mail=" . $emailUser);
     ?>
-              <div class="alert alert-success" role="alert">
+              <div class="alert alert-success mt-2" role="alert">
                 L'inscription a fonctionné! Merci de confirmer votre adresse mail avant de vous connecter.
               </div>
     <?php

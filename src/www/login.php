@@ -8,6 +8,20 @@
  * Description    : Page de connexion
  * Version        : 1.0
  */
+
+if (!isset($_SESSION['logged'])) {
+  $_SESSION['logged'] = false;
+}
+
+if (!isset($_SESSION['loggedUser'])) {
+  $_SESSION['loggedUser'] = "";
+}
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
+
+$emailUser = filter_input(INPUT_POST, 'emailUser', FILTER_SANITIZE_STRING);
+$passwordUser = filter_input(INPUT_POST, 'passwordUser', FILTER_SANITIZE_STRING);
+$submitButton = filter_input(INPUT_POST, 'submitButton');
 ?>
 <!doctype html>
 <html lang="en">
@@ -25,18 +39,35 @@
 
 <body>
   <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/navbar.php'; ?>
-  <form class="p-5">
-    <div class="form-group">
-      <label for="exampleInputEmail1">Adresse mail</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" autofocus>
-    </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1">Mot de passe</label>
-      <input type="password" class="form-control" id="exampleInputPassword1">
-    </div>
-    <button type="submit" class="btn btn-primary">Se connecter</button>
-    <small id="emailHelp" class="form-text text-muted"><a href="register.php">Vous n'avez pas de compte? Inscrivez-vous ici!</a></small>
-  </form>
+  <div class="container">
+    <?php
+    if (isset($submitButton)) {
+      if ($emailUser != "" && $passwordUser != "") {
+        if (login($emailUser, $passwordUser)) {
+          $_SESSION['logged'] = true;
+          $_SESSION['loggedUser'] = getUserByEmail($emailUser);
+          header('Location: index.php');
+        } else {
+          showError("La connexion a échoué.");
+        }
+      } else {
+        showError("Veuillez remplir tous les champs.");
+      }
+    }
+    ?>
+    <form method="POST" action="login.php">
+      <div class="form-group">
+        <label for="emailUser">Adresse mail</label>
+        <input type="email" class="form-control" id="emailUser" name="emailUser" aria-describedby="emailHelp" autofocus>
+      </div>
+      <div class="form-group">
+        <label for="passwordUser">Mot de passe</label>
+        <input type="password" class="form-control" id="passwordUser" name="passwordUser">
+      </div>
+      <button type="submit" class="btn btn-primary" name="submitButton">Se connecter</button>
+      <small id="emailHelp" class="form-text text-muted"><a href="register.php">Vous n'avez pas de compte? Inscrivez-vous ici!</a></small>
+    </form>
+  </div>
   <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/footer.php'; ?>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
