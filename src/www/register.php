@@ -8,8 +8,8 @@
  * Description    : Page d'inscription
  * Version        : 1.0
  */
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
+session_start();
 
 $nameUser = filter_input(INPUT_POST, 'nameUser', FILTER_SANITIZE_STRING);
 $firstNameUser = filter_input(INPUT_POST, 'firstNameUser', FILTER_SANITIZE_STRING);
@@ -41,13 +41,16 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
         if ($passwordUser == $verifPasswordUser) {
           if (filter_var($emailUser, FILTER_VALIDATE_EMAIL)) {
             $user = new User($emailUser, $nameUser, $firstNameUser, $passwordUser);
-            if (createUser($user)) {
-              sendConfirmationMail($emailUser, "localhost/confirmationMail.php?mail=" . $emailUser);
+            if (sendConfirmationMail($emailUser, "localhost/confirmationMail.php?mail=" . $emailUser)) {
+              if (createUser($user)) {
     ?>
-              <div class="alert alert-success mt-2" role="alert">
-                L'inscription a fonctionné! Merci de confirmer votre adresse mail avant de vous connecter.
-              </div>
+                <div class="alert alert-success mt-2" role="alert">
+                  L'inscription a fonctionné! Merci de confirmer votre adresse mail avant de vous connecter.
+                </div>
     <?php
+              }
+            } else {
+              showError("L'envoi du mail a échoué.");
             }
           } else {
             showError("Votre adresse mail n'est pas valide.");

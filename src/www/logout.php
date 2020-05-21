@@ -7,7 +7,8 @@
  * Description    : Fichier de déconnexion
  * Version        : 1.0
  */
+require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
 session_start();
-$_SESSION['logged'] = false;
+Session::setIsLogged(false);
 header('Location: index.php');
 ?>

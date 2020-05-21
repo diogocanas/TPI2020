@@ -9,10 +9,6 @@
  * Version        : 1.0
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
-session_start();
-if (!isset($_SESSION['logged'])) {
-  $_SESSION['logged'] = false;
-}
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="index.php">ETPI</a>
@@ -26,7 +22,7 @@ if (!isset($_SESSION['logged'])) {
         <a class="nav-link" href="index.php">Accueil</a>
       </li>
       <?php
-      if (!$_SESSION['logged']) {
+      if (!Session::getIsLogged()) {
       ?>
         <li class="nav-item">
           <a class="nav-link" href="login.php">Connexion</a>

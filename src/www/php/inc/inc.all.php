@@ -14,6 +14,7 @@
  // Classes
  require_once $_SERVER['DOCUMENT_ROOT'] . 'php/class/Database.php';
  require_once $_SERVER['DOCUMENT_ROOT'] . 'php/class/User.php';
+ require_once $_SERVER['DOCUMENT_ROOT'] . 'php/class/Session.php';
 
  // Fichiers de configuration
  require_once $_SERVER['DOCUMENT_ROOT'] . 'config/conparam.php';

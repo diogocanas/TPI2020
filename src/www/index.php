@@ -8,14 +8,8 @@
  * Description    : Page d'accueil
  * Version        : 1.0
  */
-
-if (!isset($_SESSION['logged'])) {
-  $_SESSION['logged'] = false;
-}
-
-if (!isset($_SESSION['loggedUser'])) {
-  $_SESSION['loggedUser'] = "";
-}
+require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
+session_start();
 ?>
 <!doctype html>
 <html lang="en">
@@ -33,11 +27,13 @@ if (!isset($_SESSION['loggedUser'])) {
 
 <body>
   <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/navbar.php'; ?>
-  <?php
-  if (!empty($_SESSION['loggedUser']) && $_SESSION['logged']) {
-    echo "Bienvenue " . $_SESSION['loggedUser']->FirstName . " " . $_SESSION['loggedUser']->Name;
-  }
-  ?>
+  <div class="container">
+    <?php
+    if (!empty(Session::getLoggedUser()) && Session::getIsLogged()) {
+      echo "Bienvenue " . Session::getLoggedUser()->FirstName . " " . Session::getLoggedUser()->Name;
+    }
+    ?>
+  </div>
   <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/footer.php'; ?>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

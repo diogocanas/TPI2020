@@ -111,12 +111,14 @@ function confirmMail($userMail)
 }
 
 /**
- * @brief Fonction qui envoie un mail pour confirmer un utilisateur
+ * @brief Fonction qui envoie un mail
  *
+ * @param string $subject Sujet du message
  * @param string $setTo Adresse mail du destinataire
- * @param string $link Le lien vers la page qui confirmera le compte de l'utilisateur
+ * @param string $message Message du mail
+ * @return bool Vrai si le mail est envoyé, faux sinon
  */
-function sendConfirmationMail($setTo, $link)
+function sendMail($subject, $setTo, $body)
 {
     // On doit créer une instance de transport smtp avec les constantes
     // définies dans le fichier mailparam.php
@@ -130,29 +132,43 @@ function sendConfirmationMail($setTo, $link)
         // On crée un nouveau message
         $message = Swift_Message::newInstance();
         // Le sujet du message
-        $message->setSubject('Confirmation de l\'adresse mail');
+        $message->setSubject($subject);
         // Qui envoie le message 
         $message->setFrom(array(EMAIL_USERNAME => 'Contact TPI'));
         // A qui on envoie le message
         $message->setTo(array($setTo));
 
-        // Un petit message html
-        // On peut bien évidemment avoir un message texte
-        $body =
+        
+        // On assigne le message et on dit de quel type. Dans notre exemple c'est du html
+        $message->setBody($body, 'text/html');
+        // Maintenant il suffit d'envoyer le message
+        $result = $mailer->send($message);
+        return true;
+    } catch (Swift_TransportException $e) {
+        echo "Problème d'envoi de message: " . $e->getMessage();
+        return false;
+    }
+}
+
+/**
+ * @brief Fonction qui envoie un mail pour confirmer un utilisateur
+ *
+ * @param string $setTo Adresse mail du destinataire
+ * @param string $link Le lien vers la page qui confirmera le compte de l'utilisateur
+ * @return bool Vrai si le mail est envoyé, faux sinon
+ */
+function sendConfirmationMail($setTo, $link)
+{
+    $subject = "Confirmation de votre adresse mail";
+    $message =
             '<html>' .
             ' <head></head>' .
             ' <body>' .
             '  <a href="' . $link . '">Pour confirmer votre compte, cliquez-ici.</a>' .
             ' </body>' .
             '</html>';
-        // On assigne le message et on dit de quel type. Dans notre exemple c'est du html
-        $message->setBody($body, 'text/html');
-        // Maintenant il suffit d'envoyer le message
-        $result = $mailer->send($message);
-    } catch (Swift_TransportException $e) {
-        echo "Problème d'envoi de message: " . $e->getMessage();
-        exit();
-    }
+
+    return sendMail($subject, $setTo, $message);
 }
 
 /**

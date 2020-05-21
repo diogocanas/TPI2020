@@ -8,16 +8,8 @@
  * Description    : Page de connexion
  * Version        : 1.0
  */
-
-if (!isset($_SESSION['logged'])) {
-  $_SESSION['logged'] = false;
-}
-
-if (!isset($_SESSION['loggedUser'])) {
-  $_SESSION['loggedUser'] = "";
-}
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
+session_start();
 
 $emailUser = filter_input(INPUT_POST, 'emailUser', FILTER_SANITIZE_STRING);
 $passwordUser = filter_input(INPUT_POST, 'passwordUser', FILTER_SANITIZE_STRING);
@@ -44,8 +36,8 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
     if (isset($submitButton)) {
       if ($emailUser != "" && $passwordUser != "") {
         if (login($emailUser, $passwordUser)) {
-          $_SESSION['logged'] = true;
-          $_SESSION['loggedUser'] = getUserByEmail($emailUser);
+          Session::setIsLogged(true);
+          Session::setLoggedUser(getUserByEmail($emailUser));
           header('Location: index.php');
         } else {
           showError("La connexion a échoué.");
