@@ -48,6 +48,8 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
                   L'inscription a fonctionné! Merci de confirmer votre adresse mail avant de vous connecter.
                 </div>
     <?php
+              } else {
+                showError("L'inscription a échoué.")
               }
             } else {
               showError("L'envoi du mail a échoué.");
@@ -63,26 +65,26 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
       }
     }
     ?>
-    <form method="POST" action="register.php">
+    <form method="POST" action="register.php" enctype="multipart/form-data">
       <div class="form-group">
         <label for="nameUser">Nom</label>
-        <input type="text" class="form-control" id="nameUser" name="nameUser" autofocus>
+        <input type="text" class="form-control" id="nameUser" name="nameUser" autofocus required>
       </div>
       <div class="form-group">
         <label for="firstNameUser">Prénom</label>
-        <input type="text" class="form-control" id="firstNameUser" name="firstNameUser">
+        <input type="text" class="form-control" id="firstNameUser" name="firstNameUser" required>
       </div>
       <div class="form-group">
         <label for="emailUser">Adresse mail</label>
-        <input type="email" class="form-control" id="emailUser" name="emailUser" aria-describedby="emailHelp">
+        <input type="email" class="form-control" id="emailUser" name="emailUser" aria-describedby="emailHelp" required>
       </div>
       <div class="form-group">
         <label for="passwordUser">Mot de passe</label>
-        <input type="password" class="form-control" id="passwordUser" name="passwordUser">
+        <input type="password" class="form-control" id="passwordUser" name="passwordUser" required>
       </div>
       <div class="form-group">
         <label for="verifPasswordUser">Vérification du mot de passe</label>
-        <input type="password" class="form-control" id="verifPasswordUser" name="verifPasswordUser">
+        <input type="password" class="form-control" id="verifPasswordUser" name="verifPasswordUser" required>
       </div>
       <button type="submit" class="btn btn-primary" name="submitButton">S'inscrire</button>
     </form>

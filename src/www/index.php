@@ -31,6 +31,7 @@ session_start();
     <?php
     if (!empty(Session::getLoggedUser()) && Session::getIsLogged()) {
       echo "Bienvenue " . Session::getLoggedUser()->FirstName . " " . Session::getLoggedUser()->Name;
+      echo '<img src="' . Session::getLoggedUser()->ProfilePicture . '"/>';
     }
     ?>
   </div>

@@ -25,15 +25,16 @@ function createUser($user)
         $db = Database::getInstance();
         $sql = 'INSERT INTO users(email, name, firstName, password, verified, roles_id) VALUES(:email, :name, :firstName, :password, :verified, :roles_id)';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':email', $user->Email);
-        $stmt->bindParam(':name', $user->Name);
-        $stmt->bindParam(':firstName', $user->FirstName);
-        $stmt->bindParam(':password', $user->Password);
-        $stmt->bindParam(':verified', $user->Verified);
-        $stmt->bindParam(':roles_id', $user->Roles_id);
+        $stmt->bindParam(':email', $user->Email, PDO::PARAM_STR);
+        $stmt->bindParam(':name', $user->Name, PDO::PARAM_STR);
+        $stmt->bindParam(':firstName', $user->FirstName, PDO::PARAM_STR);
+        $stmt->bindParam(':password', $user->Password, PDO::PARAM_STR);
+        $stmt->bindParam(':verified', $user->Verified, PDO::PARAM_INT);
+        $stmt->bindParam(':roles_id', $user->Roles_id, PDO::PARAM_INT);
         return $stmt->execute();
     } catch (PDOException $e) {
-        die('Erreur : ' . $e->getMessage());
+        echo 'Erreur : ' . $e->getMessage();
+        return false;
     }
 }
 
@@ -50,7 +51,7 @@ function login($userMail, $userPwd)
         $db = Database::getInstance();
         $sql = 'SELECT password, verified FROM users WHERE email LIKE :email';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':email', $userMail);
+        $stmt->bindParam(':email', $userMail, PDO::PARAM_STR);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
             if ($row['password'] == hash('sha256', $userPwd)) {
@@ -64,7 +65,35 @@ function login($userMail, $userPwd)
             }
         }
     } catch (PDOException $e) {
-        die('Erreur : ' . $e->getMessage());
+        echo 'Erreur : ' . $e->getMessage();
+        return false;
+    }
+}
+
+/**
+ * @brief Fonction qui modifie la photo de profil d'un utilisateur dans la base de données
+ *
+ * @param User $user L'utilisateur connecté
+ * @param $_FILES[] $userfile L'image récupéré
+ * @return bool Vrai si la modification a fonctionné, faux sinon
+ */
+function changeProfilePicture($user, $userfile)
+{
+    try {
+        $data = file_get_contents($userfile['tmp_name']);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($userfile['tmp_name']);
+        $src = 'data:' . $mime . ';base64,' . base64_encode($data);
+
+        $db = Database::getInstance();
+        $sql = 'UPDATE users SET profile_picture = :profile_picture WHERE email LIKE :email';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':profile_picture', $src);
+        $stmt->bindParam(':email', $user->Email, PDO::PARAM_STR);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        echo 'Erreur : ' . $e->getMessage();
+        return false;
     }
 }
 
@@ -74,20 +103,20 @@ function login($userMail, $userPwd)
  * @param string $userMail Adresse mail d'un utilisateur
  * @return User L'utilisateur
  */
-function getUserByEmail($userMail) 
+function getUserByEmail($userMail)
 {
     try {
         $db = Database::getInstance();
-        $sql = 'SELECT email, name, firstName, password, verified, roles_id FROM users WHERE email LIKE :email';
+        $sql = 'SELECT email, name, firstName, password, profile_picture, verified, roles_id FROM users WHERE email LIKE :email';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':email', $userMail);
+        $stmt->bindParam(':email', $userMail, PDO::PARAM_STR);
         $stmt->execute();
-        while ($row = $stmt->fetch())
-        {
-            return new User($row['email'], $row['name'], $row['firstName'], $row['password'], $row['verified'], $row['roles_id']);
+        while ($row = $stmt->fetch()) {
+            return new User($row['email'], $row['name'], $row['firstName'], $row['password'], $row['profile_picture'], $row['verified'], $row['roles_id']);
         }
     } catch (PDOException $e) {
-        die('Erreur : ' . $e->getMessage());
+        echo 'Erreur : ' . $e->getMessage();
+        return null;
     }
 }
 
@@ -103,10 +132,11 @@ function confirmMail($userMail)
         $db = Database::getInstance();
         $sql = 'UPDATE users SET verified = 1 WHERE email LIKE :email';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':email', $userMail);
+        $stmt->bindParam(':email', $userMail, PDO::PARAM_STR);
         return $stmt->execute();
     } catch (PDOException $e) {
-        die('Erreur : ' . $e->getMessage());
+        echo 'Erreur : ' . $e->getMessage();
+        return false;
     }
 }
 
@@ -138,7 +168,7 @@ function sendMail($subject, $setTo, $body)
         // A qui on envoie le message
         $message->setTo(array($setTo));
 
-        
+
         // On assigne le message et on dit de quel type. Dans notre exemple c'est du html
         $message->setBody($body, 'text/html');
         // Maintenant il suffit d'envoyer le message
@@ -161,12 +191,12 @@ function sendConfirmationMail($setTo, $link)
 {
     $subject = "Confirmation de votre adresse mail";
     $message =
-            '<html>' .
-            ' <head></head>' .
-            ' <body>' .
-            '  <a href="' . $link . '">Pour confirmer votre compte, cliquez-ici.</a>' .
-            ' </body>' .
-            '</html>';
+        '<html>' .
+        ' <head></head>' .
+        ' <body>' .
+        '  <a href="' . $link . '">Pour confirmer votre compte, cliquez-ici.</a>' .
+        ' </body>' .
+        '</html>';
 
     return sendMail($subject, $setTo, $message);
 }

@@ -31,6 +31,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
       } else {
       ?>
         <li class="nav-item">
+          <a class="nav-link" href="profile.php">Profil</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="logout.php">Déconnexion</a>
         </li>
       <?php
