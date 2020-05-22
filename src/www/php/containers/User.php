@@ -18,13 +18,14 @@ class User
      * @param string $email L'adresse mail de l'utilisateur
      * @param string $password Le mot de passe de l'utilisateur (hashé)
      */
-    function __construct($email, $name, $firstName, $password, $profilePicture = null, $verified = 0, $roles_id = 0)
+    function __construct($email, $name, $firstName, $password, $token = null, $profilePicture = null, $verified = 0, $roles_id = 0)
     {
         $this->Email = $email;
         $this->Name = $name;
         $this->FirstName = $firstName;
         $this->ProfilePicture = $profilePicture;
         $this->Password = $password;
+        $this->Token = $token;
         $this->Verified = $verified;
         $this->Roles_id = $roles_id;
     }
@@ -51,6 +52,11 @@ class User
      * @var string Le mot de passe de l'utilisateur (hashé)
      */
     public $Password;
+
+    /**
+     * @var string Le token de l'utilisateur
+     */
+    public $Token;
 
     /**
      * @var string La photo de profil de l'utilisateur (en base64)

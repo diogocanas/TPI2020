@@ -29,9 +29,9 @@ session_start();
   <?php include_once $_SERVER['DOCUMENT_ROOT'] . 'html/navbar.php'; ?>
   <div class="container">
     <?php
-    if (!empty(Session::getLoggedUser()) && Session::getIsLogged()) {
-      echo "Bienvenue " . Session::getLoggedUser()->FirstName . " " . Session::getLoggedUser()->Name;
-      echo '<img src="' . Session::getLoggedUser()->ProfilePicture . '"/>';
+    if (!empty(SessionManager::getLoggedUser()) && SessionManager::getIsLogged()) {
+      echo "Bienvenue " . SessionManager::getLoggedUser()->FirstName . " " . SessionManager::getLoggedUser()->Name;
+      echo '<img src="' . SessionManager::getLoggedUser()->ProfilePicture . '"/>';
     }
     ?>
   </div>

@@ -10,10 +10,10 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . 'php/inc/inc.all.php';
 
-if (isset($_GET['mail'])) {
-    $userMail = $_GET['mail'];
+if (isset($_GET['token'])) {
+    $userToken = $_GET['token'];
 }
-if (confirmMail($userMail)) {
+if (UserManager::confirmMail($userToken)) {
     header('Location: login.php');
 }
 ?>

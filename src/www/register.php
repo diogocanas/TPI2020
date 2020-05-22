@@ -40,19 +40,25 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
       if ($nameUser != "" && $firstNameUser != "" && $emailUser != "" && $passwordUser != "" && $verifPasswordUser != "") {
         if ($passwordUser == $verifPasswordUser) {
           if (filter_var($emailUser, FILTER_VALIDATE_EMAIL)) {
-            $user = new User($emailUser, $nameUser, $firstNameUser, $passwordUser);
-            if (sendConfirmationMail($emailUser, "localhost/confirmationMail.php?mail=" . $emailUser)) {
-              if (createUser($user)) {
+            if (!UserManager::exist($emailUser)) {
+              $user = new User($emailUser, $nameUser, $firstNameUser, $passwordUser);
+              if (UserManager::createUser($user)) {
+                if (UserManager::createToken($user)) {
+                  if (UserManager::sendConfirmationMail($emailUser)) {
     ?>
-                <div class="alert alert-success mt-2" role="alert">
-                  L'inscription a fonctionné! Merci de confirmer votre adresse mail avant de vous connecter.
-                </div>
+                    <div class="alert alert-success mt-2" role="alert">
+                      L'inscription a fonctionné! Merci de confirmer votre adresse mail avant de vous connecter.
+                    </div>
     <?php
+                  }
+                } else {
+                  showError("L'inscription a échoué.");
+                }
               } else {
-                showError("L'inscription a échoué.")
+                showError("L'inscription a échoué.");
               }
             } else {
-              showError("L'envoi du mail a échoué.");
+              showError("Cette adresse mail est déjà utilisée.");
             }
           } else {
             showError("Votre adresse mail n'est pas valide.");

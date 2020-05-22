@@ -35,9 +35,9 @@ $submitButton = filter_input(INPUT_POST, 'submitButton');
     <?php
     if (isset($submitButton)) {
       if ($emailUser != "" && $passwordUser != "") {
-        if (login($emailUser, $passwordUser)) {
-          Session::setIsLogged(true);
-          Session::setLoggedUser(getUserByEmail($emailUser));
+        if (UserManager::login($emailUser, $passwordUser)) {
+          SessionManager::setIsLogged(true);
+          SessionManager::setLoggedUser(UserManager::getUserByEmail($emailUser));
           header('Location: index.php');
         } else {
           showError("La connexion a échoué.");

@@ -11,7 +11,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
 
-class Session
+class SessionManager
 {
 
     /**

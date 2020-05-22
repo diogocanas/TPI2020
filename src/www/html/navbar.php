@@ -22,7 +22,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/php/inc/inc.all.php';
         <a class="nav-link" href="index.php">Accueil</a>
       </li>
       <?php
-      if (!Session::getIsLogged()) {
+      if (!SessionManager::getIsLogged()) {
       ?>
         <li class="nav-item">
           <a class="nav-link" href="login.php">Connexion</a>

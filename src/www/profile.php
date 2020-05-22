@@ -36,8 +36,8 @@ $updateButton = filter_input(INPUT_POST, 'updateButton');
                 echo ('Problème de transfert');
                 exit;
             } else {
-                changeProfilePicture(Session::getLoggedUser(), $_FILES['profilePictureUser']);
-                Session::setLoggedUser(getUserByEmail('diogoalmeida1709@gmail.com'));
+                UserManager::changeProfilePicture(SessionManager::getLoggedUser(), $_FILES['profilePictureUser']);
+                SessionManager::setLoggedUser(UserManager::getUserByEmail('diogoalmeida1709@gmail.com'));
             }
         }
         ?>
